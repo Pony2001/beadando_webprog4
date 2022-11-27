@@ -11,6 +11,7 @@ const app = express()
 const port = process.env.PORT
 
 app.use(cors())
+app.use(express.json())
 
 
 app.get('/pets', (req, res) => {
@@ -143,6 +144,49 @@ const petsResult = JSON.parse(petsRead)
   }))
   return
 }
+})
+
+//DELETE-------------------------------------------------------------------------------
+app.delete('/pets', async (req, res) => {
+try{
+
+  const body = await req.body
+  const idToDelete = body.id
+  console.log({body, idToDelete})
+  const petsRead = fs.readFileSync(`${__dirname}/db/pets.json`, 'utf-8'
+  , (err, content) => {
+    
+    if(err){
+      throw new Error("Sikertelen törlés")
+      return
+    }
+  })
+
+  const petsResult = JSON.parse(petsRead)
+  const newPets = petsResult.filter(pet => pet.id !== idToDelete)
+  //console.log({idToDelete, newPets, petsResult})
+  const formatedPets = JSON.stringify(newPets)
+  //console.log(formatedPets)
+
+
+
+  const petsWrite = fs.writeFileSync(`${__dirname}/db/pets.json`, formatedPets, 'utf-8')
+  
+  console.log('Sikeres írás')
+
+  res.status(200).send(JSON.stringify({
+    success: true
+  }))
+
+}catch(error){
+  console.log(error)
+  res.status(500).send(JSON.stringify({
+    success: false,
+    errorMessage: "Sikertelen művelet" 
+  }))
+  return
+}
+
 })
 
 

@@ -20,19 +20,21 @@ const getPets = useCallback(async()=>{
 },[setErrorMessage])
 
 const deletePet = useCallback(async(id)=>{
+   const idToDelete = id
    const body = JSON.stringify({
-      id: id
+      id: idToDelete
    })
    const deletePetResult = await callBackend("http://localhost:8000/pets", "DELETE", body)
    if(!deletePetResult?.success){
       setErrorMessage(deletePetResult?.errorMessage || "Szerver hiba")
       return
    }
-   if(deletePetResult?.pet){
+   if(deletePetResult?.success){
       
-      const newDisplayedPets = displayedPets.filter(pet => id !== pet.id)
-
+      const newDisplayedPets = displayedPets.filter(pet => idToDelete !== pet.id)
+console.log({newDisplayedPets,idToDelete})
       setDisplayedPets(newDisplayedPets)
+      setCurrentPet(null) 
    }
 },[displayedPets, setErrorMessage])
 
@@ -60,7 +62,7 @@ useEffect(()=>{
          <div className='pet-details'>
             <div>
                <div><p>Név</p><p>{currentPet?.name ?? ""}</p></div> {/* undefined és null esetén a ?? a jobb oldalon levő értéket adja*/}
-               <div><p>Gazda</p><p>{currentPet?.owners?.length ? currentPet?.owners.map(owner =><p key={owner.id}>{owner.name}</p>) : <p>{""}</p>}</p></div>
+               <div><p>Gazda</p><div>{currentPet?.owners?.length ? currentPet?.owners.map(owner =><p key={owner.id}>{owner.name}</p>) : <p>{""}</p>}</div></div>
                <div>
                   <button onClick={()=>{}}>Módosít</button>
                   <button 
