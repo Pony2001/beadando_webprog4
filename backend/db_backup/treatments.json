@@ -1,0 +1,14 @@
+[
+   {
+      "id": "1",
+      "type": "General check up"
+   },
+   {
+      "id": "2",
+      "type": "Surgery"
+   },
+   {
+      "id": "3",
+      "type": "Blood work"
+   }
+]

@@ -1,0 +1,32 @@
+[
+   {
+      "pet_id": "1",
+      "treatment_id": "1",
+      "date": "2022-11-03"
+   },
+   {
+      "pet_id": "2",
+      "treatment_id": "1",
+      "date": "2022-11-12"
+   },
+   {
+      "pet_id": "3",
+      "treatment_id": "1",
+      "date": "2022-11-20"
+   },
+   {
+      "pet_id": "3",
+      "treatment_id": "2",
+      "date": "2022-11-16"
+   },
+   {
+      "pet_id": "4",
+      "treatment_id": "3",
+      "date": "2022-11-26"
+   },
+   {
+      "pet_id": "5",
+      "treatment_id": "1",
+      "date": "2022-11-25"
+   }
+]
