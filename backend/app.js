@@ -2,16 +2,13 @@ const { response } = require('express');
 const express = require('express')
 const path = require('path')
 require('dotenv').config()
-// {path: path.resolve(__dirname, `/backend/.env`)}
 const cors = require('cors')
 const fs = require('fs')
-
-// import express from 'express'
 const app = express()
 const port = process.env.PORT
 
 app.use(cors())
-app.use(express.json())
+app.use(express.json()) //automatikus json beolvasás
 
 
 app.get('/pets', (req, res) => {
@@ -152,7 +149,6 @@ try{
 
   const body = await req.body
   const idToDelete = body.id
-  console.log({body, idToDelete})
   const petsRead = fs.readFileSync(`${__dirname}/db/pets.json`, 'utf-8'
   , (err, content) => {
     
