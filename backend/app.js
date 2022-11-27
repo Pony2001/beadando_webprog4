@@ -16,89 +16,88 @@ app.use(cors())
 app.get('/pets', (req, res) => {
 
   //res.header({'Content-Type': 'application/json'})
+try{
 
-  const petsRead = fs.readFileSync(`${__dirname}/db/pets.json`, 'utf-8')
-  // , (err, content) => {
-  //   if(err){
-      
-  //     res.status(404).send(JSON.stringify({
-  //       success: false,
-  //       errorMessage: "Nem találtunk megfelelő háziállat adatot" 
-  //     }))
-  //     return
-  //   }
-  //   return content
-  // })
+  const petsRead = fs.readFileSync(`${__dirname}/db/pets.json`, 'utf-8'
+  , (err, content) => {
+    
+    if(err){
+      console.log(err)
+      res.status(404).send(JSON.stringify({
+        success: false,
+        errorMessage: "Nem találtunk megfelelő adatot" 
+      }))
+      return
+    }
+  })
+
+
  
 const petsResult = JSON.parse(petsRead)
 //console.log({petsResult})
 
   //registryResult
-  const registryRead = fs.readFileSync(`${__dirname}/db/registry.json`, 'utf-8')
-  // , (err, content) => {
-  //   if(err){
-      
-  //     res.status(404).send(JSON.stringify({
-  //       success: false,
-  //       errorMessage: "Nem találtunk megfelelő kapcsolatot a vendégek és az állatok adatai közt" 
-  //     }))
-  //     return
-  //   }
-  //   // console.log('registryResult:')
-  //   // console.log(JSON.parse(content))
-  //   return JSON.parse(content)
-  // })
+  const registryRead = fs.readFileSync(`${__dirname}/db/registry.json`, 'utf-8'
+  , (err, content) => {
+    
+    if(err){
+      console.log(err)
+      res.status(404).send(JSON.stringify({
+        success: false,
+        errorMessage: "Nem találtunk megfelelő adatot" 
+      }))
+      return
+    }
+  })
 
   const registryResult = JSON.parse(registryRead)
   //console.log({registryResult})
 
   //customersResult
-  const customersRead = fs.readFileSync(`${__dirname}/db/customers.json`, 'utf-8')
-  // , (err, content) => {
-  //   if(err){
-      
-  //     res.status(404).send(JSON.stringify({
-  //       success: false,
-  //       errorMessage: "Nem találtunk megfelelő vendég adatot" 
-  //     }))
-  //     return
-  //   }
-  //   // console.log('customersResult:')
-  //   // console.log(JSON.parse(content))
-  //   return JSON.parse(content)
-  // })
+  const customersRead = fs.readFileSync(`${__dirname}/db/customers.json`, 'utf-8'
+  , (err, content) => {
+    
+    if(err){
+      console.log(err)
+      res.status(404).send(JSON.stringify({
+        success: false,
+        errorMessage: "Nem találtunk megfelelő adatot" 
+      }))
+      return
+    }
+  })
+
   const customersResult = JSON.parse(customersRead)
   //console.log({customersResult})
 
-  const treatmentForPetsRead = fs.readFileSync(`${__dirname}/db/treatmentForPets.json`, 'utf-8')
-  // , (err, content) => {
-  //   if(err){
-      
-  //     res.status(404).send(JSON.stringify({
-  //       success: false,
-  //       errorMessage: "Nem találtunk megfelelő kapcsolatot az állatok és az ellátások adatai közt" 
-  //     }))
-  //     return
-  //   }
-  //   return JSON.parse(content)
-  // })
+  const treatmentForPetsRead = fs.readFileSync(`${__dirname}/db/treatmentForPets.json`, 'utf-8'
+  , (err, content) => {
+    
+    if(err){
+      console.log(err)
+      res.status(404).send(JSON.stringify({
+        success: false,
+        errorMessage: "Nem találtunk megfelelő adatot" 
+      }))
+      return
+    }
+  })
+
   const treatmentForPetsResult = JSON.parse(treatmentForPetsRead)
 
   //treatmentsResult
-  const treatmentsRead = fs.readFileSync(`${__dirname}/db/treatments.json`, 'utf-8')
-  // , (err, content) => {
-  //   if(err){
-      
-  //     res.status(404).send(JSON.stringify({
-  //       success: false,
-  //       errorMessage: "Nem találtunk megfelelő ellátás adatot" 
-  //     }))
-  //     return
-  //   }
-  //   // console.log('treatmentsResult:')
-  //   // console.log(JSON.parse(content))
-  //   return JSON.parse(content)
-  // })
+  const treatmentsRead = fs.readFileSync(`${__dirname}/db/treatments.json`, 'utf-8'
+  , (err, content) => {
+    
+    if(err){
+      console.log(err)
+      res.status(404).send(JSON.stringify({
+        success: false,
+        errorMessage: "Nem találtunk megfelelő adatot" 
+      }))
+      return
+    }
+  })
 
   const treatmentsResult = JSON.parse(treatmentsRead)
   //console.log({treatmentsResult})
@@ -118,6 +117,7 @@ const petsResult = JSON.parse(petsRead)
     }})
 
     const petData ={
+      id: pet.id,
       name: pet.name,
       owners:customers,
       species:pet.species,
@@ -135,6 +135,14 @@ const petsResult = JSON.parse(petsRead)
     success: true,
     pets: returningResults
   }))
+}catch(error){
+  console.log(error)
+  res.status(404).send(JSON.stringify({
+    success: false,
+    errorMessage: "Nem találtunk megfelelő adatot" 
+  }))
+  return
+}
 })
 
 
