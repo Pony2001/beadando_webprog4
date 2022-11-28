@@ -8,6 +8,7 @@ export default function Pets({ errorMessage, setErrorMessage}){
    //jelenlegi választott állat
    const [currentPet, setCurrentPet]=useState(null)
 
+//GET
 const getPets = useCallback(async()=>{
    const getPetsResult = await callBackend("http://localhost:8000/pets", "GET")
    if(!getPetsResult?.success){
@@ -19,6 +20,7 @@ const getPets = useCallback(async()=>{
    }
 },[setErrorMessage])
 
+//DELETE
 const deletePet = useCallback(async(id)=>{
    const idToDelete = id
    const body = JSON.stringify({
@@ -32,7 +34,6 @@ const deletePet = useCallback(async(id)=>{
    if(deletePetResult?.success){
       
       const newDisplayedPets = displayedPets.filter(pet => idToDelete !== pet.id)
-console.log({newDisplayedPets,idToDelete})
       setDisplayedPets(newDisplayedPets)
       setCurrentPet(null) 
    }
@@ -53,7 +54,7 @@ useEffect(()=>{
             displayedPets && displayedPets.length ? displayedPets.map(pet => 
                <div style= {{display: "flex",gap: "10px", backgroundColor: pet.name === "Python" ? "magenta" : "whitesmoke"}} key={Math.random()}>
                   <p>{pet.name}</p> <p>{pet.species}</p> 
-                  <button onClick={()=>{setCurrentPet(pet)}}> Módosít</button>
+                  <button onClick={()=>{setCurrentPet(pet)}}> Megtekint</button>
                </div>
             ) : null
          }
@@ -64,7 +65,9 @@ useEffect(()=>{
                <div><p>Név</p><p>{currentPet?.name ?? ""}</p></div> {/* undefined és null esetén a ?? a jobb oldalon levő értéket adja*/}
                <div><p>Gazda</p><div>{currentPet?.owners?.length ? currentPet?.owners.map(owner =><p key={owner.id}>{owner.name}</p>) : <p>{""}</p>}</div></div>
                <div>
-                  <button onClick={()=>{}}>Módosít</button>
+                  <button 
+                     disabled={currentPet?.id === null || currentPet?.id === undefined} 
+                     onClick={()=>{}}>Módosít</button>
                   <button 
                      disabled={currentPet?.id === null || currentPet?.id === undefined} 
                      onClick={()=>{deletePet(currentPet?.id)}}>Töröl</button>

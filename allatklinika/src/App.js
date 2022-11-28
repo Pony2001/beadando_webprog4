@@ -27,7 +27,7 @@ useEffect(()=>{
       <nav>
 
 
-        <button onClick={async ()=>{
+        <button disabled onClick={async ()=>{
           setRenderedWindow("customers")
           const getCustomersResult = await callBackend("http://localhost:8000/customers", "GET")
           if(!getCustomersResult?.success){
@@ -46,7 +46,7 @@ useEffect(()=>{
 
 
 
-        <button onClick={async ()=>{
+        <button disabled onClick={async ()=>{
           setRenderedWindow("treatments")
           const getTreatmentsResult = await callBackend("http://localhost:8000/treatments", "GET")
           if(!getTreatmentsResult?.success){

@@ -10,7 +10,7 @@ const port = process.env.PORT
 app.use(cors())
 app.use(express.json()) //automatikus json beolvasás
 
-
+// GET-------------------------------------------------------------------------------
 app.get('/pets', (req, res) => {
 
   //res.header({'Content-Type': 'application/json'})
@@ -122,7 +122,7 @@ const petsResult = JSON.parse(petsRead)
       treatments: filteredTreatmentForPets,
     }
     
-    console.log({petData})
+    //console.log({petData})
 
     
     return petData 
@@ -143,7 +143,7 @@ const petsResult = JSON.parse(petsRead)
 }
 })
 
-//DELETE-------------------------------------------------------------------------------
+// DELETE-------------------------------------------------------------------------------
 app.delete('/pets', async (req, res) => {
 try{
 
@@ -170,9 +170,9 @@ try{
   
   console.log('Sikeres írás')
 
-  res.status(200).send(JSON.stringify({
+res.status(200).send(JSON.stringify({
     success: true
-  }))
+    }))
 
 }catch(error){
   console.log(error)
@@ -184,6 +184,14 @@ try{
 }
 
 })
+// UPDATE-------------------------------------------------------------------------------
+// PUT 
+// beolvassuk az összes állatos dolgot 
+// kiveszük a jelenleg bent lévő adatokat az adott állatra
+// bejövő adatok után módosítjuk a kivett adatot
+// és vissza írjuk ( .splice() )
+// kézzel: név, faj
+// listából: treatment
 
 
 app.get('/', (req, res) => {
