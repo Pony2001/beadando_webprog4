@@ -8,6 +8,13 @@ export default function Pets({ errorMessage, setErrorMessage}){
    //jelenlegi választott állat
    const [currentPet, setCurrentPet]=useState(null)
 
+   const [name, setName]=useState('ahan')
+
+   console.log(currentPet.name)
+
+   
+   
+
 //GET
 const getPets = useCallback(async()=>{
    const getPetsResult = await callBackend("http://localhost:8000/pets", "GET")
@@ -44,31 +51,47 @@ useEffect(()=>{
    getPets()
    
 },[getPets])
+
+
     
    return(
    <>
       <h1>Pets!</h1>
-      <div>
-         <div>
-         {
-            displayedPets && displayedPets.length ? displayedPets.map(pet => 
-               <div style= {{display: "flex",gap: "10px", backgroundColor: pet.name === "Python" ? "magenta" : "whitesmoke"}} key={Math.random()}>
-                  <p>{pet.name}</p> <p>{pet.species}</p> 
-                  <button onClick={()=>{setCurrentPet(pet)}}> Megtekint</button>
-               </div>
-            ) : null
-         }
+      <div className='row'>
+         <div className='col-md-6'>
+            {
+               displayedPets && displayedPets.length ? displayedPets.map(pet => 
+                  <div key={Math.random()}>
+
+                     <span>{pet.name}</span> <span>{pet.species}</span> 
+                     
+                     <button 
+                        className='btn btn-outline-dark m-1 ' 
+                        onClick={()=>{setCurrentPet(pet)}}>Megtekint</button>
+                     
+                  </div>
+               ) : null
+            }
          </div>
 
-         <div className='pet-details'>
+         <div className='pet-details col-md-6'>
             <div>
-               <div><p>Név</p><p>{currentPet?.name ?? ""}</p></div> {/* undefined és null esetén a ?? a jobb oldalon levő értéket adja*/}
-               <div><p>Gazda</p><div>{currentPet?.owners?.length ? currentPet?.owners.map(owner =><p key={owner.id}>{owner.name}</p>) : <p>{""}</p>}</div></div>
+               <div>
+                  <p>Név</p>
+                  
+                  <input value={name} name="name" onChange={e => setName(e.target.value)}></input>
+               </div> {/* undefined és null esetén a ?? a jobb oldalon levő értéket adja*/}
+               <div>
+                  <p>Gazda</p>
+                  <div>{currentPet?.owners?.length ? currentPet?.owners.map(owner =><input key={owner.id} value={owner.name}></input>) : <p>{""}</p>}</div>
+                  </div>
                <div>
                   <button 
+                     className='btn btn-primary m-1'
                      disabled={currentPet?.id === null || currentPet?.id === undefined} 
                      onClick={()=>{}}>Módosít</button>
                   <button 
+                     className='btn btn-danger m-1'
                      disabled={currentPet?.id === null || currentPet?.id === undefined} 
                      onClick={()=>{deletePet(currentPet?.id)}}>Töröl</button>
                </div>
