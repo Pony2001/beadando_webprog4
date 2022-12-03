@@ -50,11 +50,33 @@ export default function Pets({ errorMessage, setErrorMessage }) {
     [displayedPets, setErrorMessage]
   );
 
+  //UPDATE
+  const updatePet = useCallback(
+   async (modifiedPet) => {
+     const petToUpdate = modifiedPet;
+     const body = JSON.stringify({
+       pet: petToUpdate,
+     });
+     const updatePetResult = await callBackend(
+       "http://localhost:8000/pets",
+       "PUT",
+       body
+     );
+     if (!updatePetResult?.success) {
+       setErrorMessage(updatePetResult?.errorMessage || "Szerver hiba");
+       return;
+     }
+   },
+   [setErrorMessage]
+  );
+
+
   //akkor hívja meg a fuggvényt 1x amikor betült az oldal
   useEffect(() => {
+    
     getPets();
   }, [getPets]);
-
+  console.log(currentPet)
   return (
     <>
       <h1>Pets!</h1>
@@ -85,6 +107,8 @@ export default function Pets({ errorMessage, setErrorMessage }) {
 
                 <input
                   value={currentPet.name}
+                  minLength={3}
+                        required
                   name="name"
                   onChange={(e) => {
                     //object shallow copy + property overwrite
@@ -102,8 +126,11 @@ export default function Pets({ errorMessage, setErrorMessage }) {
                     currentPet?.owners.map((owner, index) => (
                       <input
                         key={index}
+                        minLength={3}
+                        required
                         name={`owners.${index}`}
                         value={currentPet.owners[index].name}
+                        
                         onChange={(event) => {
                           //Új owners array létrehozása mappeléssel
                           const newOwners = currentPet.owners.map((person) => {
@@ -123,6 +150,7 @@ export default function Pets({ errorMessage, setErrorMessage }) {
                           };
                           //beállítjuk a megváltozott állat adatot
                           setCurrentPet(newPet);
+                          
                         }}
                       ></input>
                     ))
@@ -137,7 +165,10 @@ export default function Pets({ errorMessage, setErrorMessage }) {
                   disabled={
                     currentPet?.id === null || currentPet?.id === undefined
                   }
-                  type="submit"
+                  type="button"
+                  onClick={() => {
+                     updatePet(currentPet);
+                   }}
                 >
                   Módosít
                 </button>
