@@ -5,8 +5,11 @@ export default function Pets({ errorMessage, setErrorMessage }) {
   //backendről meghívott állat adatok
   const [displayedPets, setDisplayedPets] = useState([]);
 
+  const [displayedCustomers, setDisplayedCustomers] = useState([]);
+
   //jelenlegi választott állat
   const [currentPet, setCurrentPet] = useState(null);
+  const [currentCustomer, setCurrentCustomer] = useState(null);
 
   //GET
   const getPets = useCallback(async () => {
@@ -20,6 +23,20 @@ export default function Pets({ errorMessage, setErrorMessage }) {
     }
     if (getPetsResult?.pets) {
       setDisplayedPets(getPetsResult.pets);
+    }
+  }, [setErrorMessage]);
+
+  const getCustomers = useCallback(async () => {
+    const getCustomersResult = await callBackend(
+      "http://localhost:8000/customers",
+      "GET"
+    );
+    if (!getCustomersResult?.success) {
+      setErrorMessage(getCustomersResult?.errorMessage || "Szerver hiba");
+      return;
+    }
+    if (getCustomersResult?.customers) {
+      setDisplayedCustomers(getCustomersResult.customers);
     }
   }, [setErrorMessage]);
 
@@ -52,47 +69,75 @@ export default function Pets({ errorMessage, setErrorMessage }) {
 
   //UPDATE
   const updatePet = useCallback(
-   async (modifiedPet) => {
-     const petToUpdate = modifiedPet;
-     const body = JSON.stringify({
-       pet: petToUpdate,
-     });
-     const updatePetResult = await callBackend(
-       "http://localhost:8000/pets",
-       "PUT",
-       body
-     );
-     if (!updatePetResult?.success) {
-       setErrorMessage(updatePetResult?.errorMessage || "Szerver hiba");
-       return;
-     }
-   },
-   [setErrorMessage]
+    async (modifiedPet) => {
+      const petToUpdate = modifiedPet;
+      const body = JSON.stringify({
+        pet: petToUpdate,
+      });
+      const updatePetResult = await callBackend(
+        "http://localhost:8000/pets",
+        "PUT",
+        body
+      );
+      if (!updatePetResult?.success) {
+        setErrorMessage(updatePetResult?.errorMessage || "Szerver hiba");
+        return;
+      }
+      if (updatePetResult?.success) {
+        const newDisplayedPets = displayedPets.filter(
+          (pet) => petToUpdate !== pet.id
+        );
+        setDisplayedPets(newDisplayedPets);
+        setCurrentPet(null);
+      }
+    },
+    [displayedPets, setErrorMessage]
   );
 
+  //CREATE
+  const postPets = useCallback(async () => {
+    const postPetsResult = await callBackend(
+      "http://localhost:8000/pets",
+      "POST"
+    );
+    if (!postPetsResult?.success) {
+      setErrorMessage(postPetsResult?.errorMessage || "Szerver hiba");
+      return;
+    }
+  }, [setErrorMessage]);
 
   //akkor hívja meg a fuggvényt 1x amikor betült az oldal
   useEffect(() => {
-    
     getPets();
   }, [getPets]);
-  console.log(currentPet)
+
+  useEffect(() => {
+    //console.log({ currentPet });
+  }, [currentPet]);
+
+  useEffect(() => {
+    getCustomers();
+  }, [getCustomers]);
+
+  useEffect(() => {
+    //console.log({ displayedCustomers });
+  }, [displayedCustomers]);
+
   return (
     <>
       <h1>Pets!</h1>
       <div className="row">
-        <div className="col-md-6">
+        <div style={{ textAlign: "center" }} className="col-md-6">
           {displayedPets && displayedPets.length
             ? displayedPets.map((pet) => (
                 <div key={Math.random()}>
-                  <span>{pet.name}</span> <span>{pet.species}</span>
                   <button
-                    className="btn btn-outline-dark m-1 "
+                    className="btn btn-outline-dark m-1"
                     onClick={() => {
                       setCurrentPet(pet);
                     }}
                   >
-                    Megtekint
+                    <span>{pet.name}</span> <span>{pet.species}</span>
                   </button>
                 </div>
               ))
@@ -100,43 +145,41 @@ export default function Pets({ errorMessage, setErrorMessage }) {
         </div>
 
         {currentPet?.id ? (
-          <form className="pet-details col-md-6">
-            <div>
-              <div>
-                <p>Név</p>
-
-                <input
-                  value={currentPet.name}
-                  minLength={3}
-                        required
-                  name="name"
-                  onChange={(e) => {
-                    //object shallow copy + property overwrite
-                    const newPet = { ...currentPet, name: e.target.value };
-                    setCurrentPet(newPet);
-                  }}
-                ></input>
-              </div>
-              {/* undefined és null esetén a ?? a jobb oldalon levő értéket adja*/}
-              <div>
-                <p>Gazda</p>
+          <form className="pet-details col-md-6 form-validation">
+            <div className="row">
+              <div className="col-md-5">
                 <div>
+                  <label className="form-validation">Név: </label>
+
+                  <input
+                    style={{ textAlign: "center" }}
+                    className="form-control m-1"
+                    value={currentPet.name}
+                    onChange={(e) => {
+                      //object shallow copy + property overwrite
+                      const newPet = { ...currentPet, name: e.target.value };
+                      setCurrentPet(newPet);
+                    }}
+                  ></input>
+                </div>
+                {/* undefined és null esetén a ?? a jobb oldalon levő értéket adja*/}
+                <br />
+                <div>
+                  <label className="form-validation">Gazda: </label>
+
                   {currentPet?.owners?.length ? (
                     //owners array minen elemére egy inputot genreálunk
                     currentPet?.owners.map((owner, index) => (
-                      <input
+                      <select
+                        style={{ textAlign: "center" }}
+                        className="form-control m-1"
                         key={index}
-                        minLength={3}
-                        required
-                        name={`owners.${index}`}
-                        value={currentPet.owners[index].name}
-                        
                         onChange={(event) => {
                           //Új owners array létrehozása mappeléssel
                           const newOwners = currentPet.owners.map((person) => {
                             const newPerson = {
                               ...person,
-                              name:
+                              id:
                                 owner.id === person.id
                                   ? event.target.value
                                   : person.name,
@@ -150,44 +193,88 @@ export default function Pets({ errorMessage, setErrorMessage }) {
                           };
                           //beállítjuk a megváltozott állat adatot
                           setCurrentPet(newPet);
-                          
                         }}
-                      ></input>
+                      >
+                        <option key={index} value={currentPet.owners[index].id}>
+                          {currentPet.owners[index].name}
+                        </option>
+                        {displayedCustomers.map((customers) => (
+                          <option key={customers.id} value={customers.id}>
+                            {customers.name}
+                          </option>
+                        ))}
+                      </select>
                     ))
                   ) : (
                     <p>{""}</p>
                   )}
+
+                  <div style={{ textAlign: "center" }}>
+                    <button
+                      className="btn btn-primary m-2"
+                      disabled={
+                        currentPet?.id === null || currentPet?.id === undefined
+                      }
+                      type="button"
+                      onClick={() => {
+                        updatePet(currentPet);
+                        getPets();
+                        getCustomers();
+                        console.log(currentPet);
+                      }}
+                    >
+                      Módosít
+                    </button>
+                    <button
+                      className="btn btn-danger m-2"
+                      disabled={
+                        currentPet?.id === null || currentPet?.id === undefined
+                      }
+                      type="button"
+                      onClick={() => {
+                        deletePet(currentPet?.id);
+                      }}
+                    >
+                      Töröl
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div>
-                <button
-                  className="btn btn-primary m-1"
-                  disabled={
-                    currentPet?.id === null || currentPet?.id === undefined
-                  }
-                  type="button"
-                  onClick={() => {
-                     updatePet(currentPet);
-                   }}
-                >
-                  Módosít
-                </button>
-                <button
-                  className="btn btn-danger m-1"
-                  disabled={
-                    currentPet?.id === null || currentPet?.id === undefined
-                  }
-                  type="button"
-                  onClick={() => {
-                    deletePet(currentPet?.id);
-                  }}
-                >
-                  Töröl
-                </button>
               </div>
             </div>
           </form>
         ) : null}
+        <div>
+          <div className="col-md-7">
+            <form action="http://localhost:8000/pets" method="POST">
+              <div>
+                <label>Állat neve: </label>
+                <div className="col-md-4">
+                  <input
+                    style={{ textAlign: "center" }}
+                    className="form-control m-1"
+                    name="name"
+                    placeholder="Pityuka"
+                  ></input>
+                </div>
+
+                <label>Állat fajtája: </label>
+                <div className="col-md-4">
+                  <input
+                    style={{ textAlign: "center" }}
+                    className="form-control m-1"
+                    name="species"
+                    placeholder="Papagály"
+                  ></input>
+                </div>
+              </div>
+              <div>
+                <button className="btn btn-primary m-2" type="submit">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </>
   );
