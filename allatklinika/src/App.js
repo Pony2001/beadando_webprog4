@@ -31,7 +31,7 @@ function App() {
         crossOrigin="*"
       />
       <div className="container">
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <nav className="navbar navbar-light bg-light">
           <button
             className="btn btn-lg btn-default"
             onClick={() => {
@@ -42,7 +42,7 @@ function App() {
           </button>
           <div className="form-inline  my-lg-0">
             <button
-              className="btn btn-lg btn-default"
+              className="btn btn-lg btn-default me-5"
               onClick={async () => {
                 setRenderedWindow("customers");
                 const getCustomersResult = await callBackend(
@@ -63,7 +63,7 @@ function App() {
             </button>
 
             <button
-              className="btn btn-lg btn-default"
+              className="btn btn-lg btn-default me-5"
               onClick={() => {
                 setRenderedWindow("pets");
               }}
@@ -73,7 +73,6 @@ function App() {
 
             <button
               className="btn btn-lg btn-default"
-              disabled
               onClick={async () => {
                 setRenderedWindow("treatments");
                 const getTreatmentsResult = await callBackend(
@@ -97,8 +96,8 @@ function App() {
           <div className="row">
             {renderedWindow === "customers" ? (
               <Customers
-                displayedCustomers={displayedCustomers}
-                setDisplayedCustomers={setDisplayedCustomers}
+                errorMessage={errorMessage}
+                setErrorMessage={setErrorMessage}
               />
             ) : renderedWindow === "pets" ? (
               <Pets
@@ -107,8 +106,8 @@ function App() {
               />
             ) : renderedWindow === "treatments" ? (
               <Treatments
-                displayedTreatments={displayedTreatments}
-                setDisplayedTreatments={setDisplayedTreatments}
+                errorMessage={errorMessage}
+                setErrorMessage={setErrorMessage}
               />
             ) : renderedWindow === "home" ? (
               <h1>Üdvözöljük klinikánk honlapján!</h1>

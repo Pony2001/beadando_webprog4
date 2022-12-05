@@ -122,12 +122,13 @@ export default function Customers({ errorMessage, setErrorMessage }) {
             ? displayedCustomers.map((customer) => (
                 <div key={Math.random()}>
                   <button
-                    className="btn btn-sm btn-outline-dark m-1 me-3 "
+                    style={{ minWidth: "7%" }}
+                    className="btn btn-sm btn-outline-dark m-1 me-3"
                     onClick={() => {
                       setCurrentCustomer(customer);
                     }}
                   >
-                    Megtekint
+                    {customer.id}
                   </button>
                   <span>{customer.name}</span> - <span>{customer.email}</span>
                 </div>

@@ -1,14 +1,1 @@
-[
-   {
-      "id": "1",
-      "type": "General check up"
-   },
-   {
-      "id": "2",
-      "type": "Surgery"
-   },
-   {
-      "id": "3",
-      "type": "Blood work"
-   }
-]
+[{"id":"1","type":"Általános ellenőrzés"},{"id":"2","type":"Műtét"},{"id":"3","type":"Vérvétel"}]

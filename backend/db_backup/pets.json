@@ -2,31 +2,31 @@
    {
       "id": "1",
       "name": "Morzsi",
-      "species": "dog"
+      "species": "kutya"
    },
    {
       "id": "2",
       "name": "Gyurika",
-      "species": "parrot"
+      "species": "papagáj"
    },
    {
       "id": "3",
       "name": "Mónika",
-      "species": "cat"
+      "species": "macska"
    },
    {
       "id": "4",
-      "name": "Pikachu",
-      "species": "pokemon"
+      "name": "Python",
+      "species": "kígyó"
    },
    {
       "id": "5",
       "name": "Pizza",
-      "species": "dog"
+      "species": "kutya"
    },
    {
       "id": "6",
       "name": "Pityu",
-      "species": "parrot"
+      "species": "papagáj"
    }
 ]

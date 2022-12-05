@@ -587,7 +587,7 @@ app.post("/customers", urlEncodedParser, (req, res) => {
           max = array[i].id;
         }
       }
-      newCustomer.id = max + 1;
+      newCustomer.id = parseInt(max) + 1;
     }
 
     array.push(newCustomer);
@@ -609,7 +609,211 @@ app.post("/customers", urlEncodedParser, (req, res) => {
 ///////////////// POST CUSTOMERS /////////////////
 /////////////////// CUSTOMERS ////////////////////
 //////////////////////////////////////////////////
+/////////////////// TREATMENTS ///////////////////
+///////////////// GET TREATMENTS /////////////////
+app.get("/treatments", (req, res) => {
+  //res.header({'Content-Type': 'application/json'})
+  try {
+    const treatmentsRead = fs.readFileSync(
+      `${__dirname}/db/treatments.json`,
+      "utf-8",
+      (err, content) => {
+        if (err) {
+          throw new Error("Nagy a baj");
+          return;
+        }
+      }
+    );
+    const treatmentsResult = JSON.parse(treatmentsRead);
 
+    res.status(200).send(
+      JSON.stringify({
+        success: true,
+        treatments: treatmentsResult,
+      })
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(
+      JSON.stringify({
+        success: false,
+        errorMessage: "Sikertelen művelet",
+      })
+    );
+    return;
+  }
+});
+
+///////////////// GET TREATMENTS /////////////////
+//////////////////////////////////////////////////
+/////////////// DELETE TREATMENTS ////////////////
+app.delete("/treatments", async (req, res) => {
+  try {
+    const body = await req.body;
+    const idToDelete = body.id;
+    const petsRead = fs.readFileSync(
+      `${__dirname}/db/treatments.json`,
+      "utf-8",
+      (err, content) => {
+        if (err) {
+          throw new Error("Sikertelen törlés");
+          return;
+        }
+      }
+    );
+
+    const treatmentsRead = fs.readFileSync(
+      `${__dirname}/db/treatments.json`,
+      "utf-8",
+      (err, content) => {
+        if (err) {
+          throw new Error("Nagy a baj");
+          return;
+        }
+      }
+    );
+    const treatmentsResult = JSON.parse(treatmentsRead);
+    const newTreatments = treatmentsResult.filter(
+      (treatment) => treatment.id !== idToDelete
+    );
+    const formatedTreatments = JSON.stringify(newTreatments);
+
+    const treatmentsWrite = fs.writeFileSync(
+      `${__dirname}/db/treatments.json`,
+      formatedTreatments,
+      "utf-8"
+    );
+
+    console.log("Sikeres írás");
+
+    res.status(200).send(
+      JSON.stringify({
+        success: true,
+      })
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(
+      JSON.stringify({
+        success: false,
+        errorMessage: "Sikertelen művelet",
+      })
+    );
+    return;
+  }
+});
+/////////////// DELETE TREATMENTS ////////////////
+//////////////////////////////////////////////////
+///////////////// PUT TREATMENTS /////////////////
+app.put("/treatments", async (req, res) => {
+  try {
+    const treatmentsRead = fs.readFileSync(
+      `${__dirname}/db/treatments.json`,
+      "utf-8",
+      (err, content) => {
+        if (err) {
+          throw new Error("Nagy a baj");
+          return;
+        }
+      }
+    );
+
+    const treatmentForPetsRead = fs.readFileSync(
+      `${__dirname}/db/treatmentForPets.json`,
+      "utf-8",
+      (err, content) => {
+        if (err) {
+          throw new Error("Nagy a baj");
+          return;
+        }
+      }
+    );
+
+    const treatmentsResult = JSON.parse(treatmentsRead);
+    const treatmentForPetsResult = JSON.parse(treatmentForPetsRead);
+
+    const body = await req.body;
+    const { id, type } = body.treatment;
+    const newTreatment = {
+      id: id,
+      type: type,
+    };
+
+    const treatmentDbIndex = treatmentsResult.findIndex(
+      (dbTreatment) => dbTreatment.id === newTreatment.id
+    );
+    const treatmentsToWrite = treatmentsResult.map((dbTreatment) => {
+      if (dbTreatment.id === newTreatment.id) {
+        return newTreatment;
+      } else {
+        return dbTreatment;
+      }
+    });
+
+    fs.writeFileSync(
+      `${__dirname}/db/treatments.json`,
+      JSON.stringify(treatmentsToWrite),
+      "utf-8"
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(
+      JSON.stringify({
+        success: false,
+        errorMessage: "Sikertelen művelet",
+      })
+    );
+    return;
+  }
+});
+///////////////// PUT TREATMENTS /////////////////
+//////////////////////////////////////////////////
+//////////////// POST  TREATMENTS ////////////////
+
+app.post("/treatments", urlEncodedParser, (req, res) => {
+  console.log({ treatments: req.body });
+  const newTreatment = {
+    id: "",
+    type: req.body.type,
+  };
+  //forCustomers
+  fs.readFile(`${__dirname}/db/treatments.json`, "utf-8", (err, content) => {
+    if (err) {
+      res.sendStatus(500);
+      return;
+    }
+    const array = JSON.parse(content);
+    if (array.length === 0) {
+      newTreatment.id = 1;
+    } else {
+      let max = array[0].id;
+      for (let i = 1; i < array.length; i++) {
+        if (array[i].id > max) {
+          max = array[i].id;
+        }
+      }
+      newTreatment.id = parseInt(max) + 1;
+    }
+
+    array.push(newTreatment);
+    fs.writeFile(
+      `${__dirname}/db/treatments.json`,
+      JSON.stringify(array),
+      "utf-8",
+      (err) => {
+        if (err) {
+          res.sendStatus(500);
+          return;
+        }
+        //res.sendStatus(201);
+        res.redirect("http://localhost:3000");
+      }
+    );
+  });
+});
+//////////////// POST  TREATMENTS ////////////////
+/////////////////// TREATMENTS ///////////////////
+//////////////////////////////////////////////////
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });

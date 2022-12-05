@@ -125,8 +125,10 @@ export default function Pets({ errorMessage, setErrorMessage }) {
 
   return (
     <>
-      <h1>Pets!</h1>
-      <div className="row">
+      <h1 style={{ textAlign: "center" }} className="mt-5">
+        Állatok
+      </h1>
+      <div className="row mt-2">
         <div style={{ textAlign: "center" }} className="col-md-6">
           {displayedPets && displayedPets.length
             ? displayedPets.map((pet) => (
@@ -137,7 +139,7 @@ export default function Pets({ errorMessage, setErrorMessage }) {
                       setCurrentPet(pet);
                     }}
                   >
-                    <span>{pet.name}</span> <span>{pet.species}</span>
+                    <span>{pet.name}</span> - <span>{pet.species}</span>
                   </button>
                 </div>
               ))
@@ -263,7 +265,7 @@ export default function Pets({ errorMessage, setErrorMessage }) {
                     style={{ textAlign: "center" }}
                     className="form-control m-1"
                     name="species"
-                    placeholder="Papagály"
+                    placeholder="Papagáj"
                   ></input>
                 </div>
               </div>
